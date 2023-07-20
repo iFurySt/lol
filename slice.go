@@ -6,7 +6,7 @@
 
 package lol
 
-// MergeSlice merges multiple slices without removing duplicates or shuffling the elements
+// MergeSlice merges multiple slices without removing duplicates or shuffling the elements.
 //
 // Play: https://go.dev/play/p/ARhoTg83WK8
 func MergeSlice[T any](ss ...[]T) []T {
@@ -29,7 +29,7 @@ func MergeSlice[T any](ss ...[]T) []T {
 	return res
 }
 
-// UniqSlice merges multiple slices with removing duplicates the elements
+// UniqSlice merges multiple slices with removing duplicates the elements.
 //
 // Play: https://go.dev/play/p/clvg0gFoBQs
 func UniqSlice[T comparable](ss ...[]T) []T {
@@ -61,7 +61,7 @@ func UniqSlice[T comparable](ss ...[]T) []T {
 	return res
 }
 
-// Map maps a function over a slice
+// Map maps a function over a slice.
 //
 // https://go.dev/play/p/ePBYrs1YqDz
 func Map[T any](list []T, fn func(v T) T) []T {
@@ -109,4 +109,30 @@ func ReduceRight[T any, R any](list []T, fn func(sum R, item T, index int) R, in
 	}
 
 	return initial
+}
+
+// Keys creates an array of the map keys.
+//
+// Play: https://go.dev/play/p/JlVhmI6ThnL
+func Keys[K comparable, V any](mapping map[K]V) []K {
+	res := make([]K, 0, len(mapping))
+
+	for k := range mapping {
+		res = append(res, k)
+	}
+
+	return res
+}
+
+// Values creates an array of the map values.
+//
+// Play: https://go.dev/play/p/YQrxuIzbimT
+func Values[K comparable, V any](mapping map[K]V) []V {
+	res := make([]V, 0, len(mapping))
+
+	for _, v := range mapping {
+		res = append(res, v)
+	}
+
+	return res
 }
