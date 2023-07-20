@@ -27,3 +27,38 @@ func ExampleUniqSlice() {
 	// [1 4 7 2 3]
 	// [4 7 9 10]
 }
+
+func ExampleMap() {
+	res := Map([]int{1, 3, 5}, func(i int) int { return i * 2 })
+	fmt.Println(res)
+	// Output:
+	// [2 6 10]
+}
+
+func ExampleReduce() {
+	res1 := Reduce([]int{1, 7, 3, 4}, func(s float64, v, i int) float64 {
+		return s * float64(v)
+	}, 2)
+	res2 := Reduce([]string{"1", "7", "3", "4"}, func(s, v string, i int) string {
+		return fmt.Sprintf("%s %d.%s", s, i, v)
+	}, "start:")
+	fmt.Println(res1)
+	fmt.Println(res2)
+	// Output:
+	// 168
+	// start: 0.1 1.7 2.3 3.4
+}
+
+func ExampleReduceRight() {
+	res1 := ReduceRight([]int{1, 7, 3, 4}, func(s float64, v, i int) float64 {
+		return s * float64(v)
+	}, 2)
+	res2 := ReduceRight([]string{"1", "7", "3", "4"}, func(s, v string, i int) string {
+		return fmt.Sprintf("%s %d.%s", s, i, v)
+	}, "reverse:")
+	fmt.Println(res1)
+	fmt.Println(res2)
+	// Output:
+	// 168
+	// reverse: 3.4 2.3 1.7 0.1
+}

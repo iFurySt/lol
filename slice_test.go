@@ -7,6 +7,7 @@
 package lol
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -90,5 +91,273 @@ func TestUniqSlice(t *testing.T) {
 	}
 	for _, c := range cases {
 		assert.Equalf(t, c.want, UniqSlice(c.inputs...), c.name)
+	}
+}
+
+func TestMap(t *testing.T) {
+	for _, c := range []struct {
+		name   string
+		inputs []int
+		fn     func(int) int
+		want   []int
+	}{
+		{
+			"nil",
+			nil,
+			func(v int) int {
+				return -v
+			},
+			[]int{},
+		},
+		{
+			"empty",
+			[]int{},
+			func(v int) int {
+				return -v
+			},
+			[]int{},
+		},
+		{
+			"normal",
+			[]int{1, 7, 3, 4},
+			func(v int) int {
+				return -v
+			},
+			[]int{-1, -7, -3, -4},
+		},
+		{
+			"fn nil",
+			[]int{1, 7, 3, 4},
+			nil,
+			[]int{1, 7, 3, 4},
+		},
+	} {
+		assert.Equalf(t, c.want, Map(c.inputs, c.fn), c.name)
+	}
+}
+
+func TestReduce(t *testing.T) {
+	t.Parallel()
+
+	for _, c := range []struct {
+		name    string
+		inputs  []int
+		fn      func(int, int, int) int
+		initial int
+		want    int
+	}{
+		{
+			"nil",
+			nil,
+			func(s, v, i int) int {
+				return s + v
+			},
+			0,
+			0,
+		},
+		{
+			"empty",
+			[]int{},
+			func(s, v, i int) int {
+				return s + v
+			},
+			1,
+			1,
+		},
+		{
+			"normal",
+			[]int{1, 7, 3, 4},
+			func(s, v, i int) int {
+				return s + v
+			},
+			0,
+			15,
+		},
+		{
+			"fn nil",
+			[]int{1, 7, 3, 4},
+			nil,
+			0,
+			0,
+		},
+	} {
+		assert.Equalf(t, c.want, Reduce(c.inputs, c.fn, c.initial), c.name)
+	}
+
+	for _, c := range []struct {
+		name    string
+		inputs  []int
+		fn      func(float64, int, int) float64
+		initial float64
+		want    float64
+	}{
+		{
+			"nil",
+			nil,
+			func(s float64, v, i int) float64 {
+				return s * float64(v)
+			},
+			0,
+			0,
+		},
+		{
+			"empty",
+			[]int{},
+			func(s float64, v, i int) float64 {
+				return s * float64(v)
+			},
+			1,
+			1,
+		},
+		{
+			"normal",
+			[]int{1, 7, 3, 4},
+			func(s float64, v, i int) float64 {
+				return s * float64(v)
+			},
+			2,
+			168,
+		},
+		{
+			"fn nil",
+			[]int{1, 7, 3, 4},
+			nil,
+			3,
+			3,
+		},
+	} {
+		assert.Equalf(t, c.want, Reduce(c.inputs, c.fn, c.initial), c.name)
+	}
+
+	for _, c := range []struct {
+		name    string
+		inputs  []string
+		fn      func(string, string, int) string
+		initial string
+		want    string
+	}{
+		{
+			"string",
+			[]string{"1", "7", "3", "4"},
+			func(s, v string, i int) string {
+				return fmt.Sprintf("%s %d.%s", s, i, v)
+			},
+			"start:", "start: 0.1 1.7 2.3 3.4",
+		},
+	} {
+		assert.Equalf(t, c.want, Reduce(c.inputs, c.fn, c.initial), c.name)
+	}
+}
+
+func TestReduceRight(t *testing.T) {
+	t.Parallel()
+
+	for _, c := range []struct {
+		name    string
+		inputs  []int
+		fn      func(int, int, int) int
+		initial int
+		want    int
+	}{
+		{
+			"nil",
+			nil,
+			func(s, v, i int) int {
+				return s + v
+			},
+			0,
+			0,
+		},
+		{
+			"empty",
+			[]int{},
+			func(s, v, i int) int {
+				return s + v
+			},
+			1,
+			1,
+		},
+		{
+			"normal",
+			[]int{1, 7, 3, 4},
+			func(s, v, i int) int {
+				return s + v
+			},
+			0,
+			15,
+		},
+		{
+			"fn nil",
+			[]int{1, 7, 3, 4},
+			nil,
+			0,
+			0,
+		},
+	} {
+		assert.Equalf(t, c.want, ReduceRight(c.inputs, c.fn, c.initial), c.name)
+	}
+
+	for _, c := range []struct {
+		name    string
+		inputs  []int
+		fn      func(float64, int, int) float64
+		initial float64
+		want    float64
+	}{
+		{
+			"nil",
+			nil,
+			func(s float64, v, i int) float64 {
+				return s * float64(v)
+			},
+			0,
+			0,
+		},
+		{
+			"empty",
+			[]int{},
+			func(s float64, v, i int) float64 {
+				return s * float64(v)
+			},
+			1,
+			1,
+		},
+		{
+			"normal",
+			[]int{1, 7, 3, 4},
+			func(s float64, v, i int) float64 {
+				return s * float64(v)
+			},
+			2,
+			168,
+		},
+		{
+			"fn nil",
+			[]int{1, 7, 3, 4},
+			nil,
+			3,
+			3,
+		},
+	} {
+		assert.Equalf(t, c.want, ReduceRight(c.inputs, c.fn, c.initial), c.name)
+	}
+
+	for _, c := range []struct {
+		name    string
+		inputs  []string
+		fn      func(string, string, int) string
+		initial string
+		want    string
+	}{
+		{
+			"string",
+			[]string{"1", "7", "3", "4"},
+			func(s, v string, i int) string {
+				return fmt.Sprintf("%s %d.%s", s, i, v)
+			},
+			"reverse:", "reverse: 3.4 2.3 1.7 0.1",
+		},
+	} {
+		assert.Equalf(t, c.want, ReduceRight(c.inputs, c.fn, c.initial), c.name)
 	}
 }

@@ -60,3 +60,53 @@ func UniqSlice[T comparable](ss ...[]T) []T {
 	}
 	return res
 }
+
+// Map maps a function over a slice
+//
+// https://go.dev/play/p/ePBYrs1YqDz
+func Map[T any](list []T, fn func(v T) T) []T {
+	if len(list) == 0 {
+		return []T{}
+	}
+	if fn == nil {
+		return list
+	}
+
+	for i := range list {
+		list[i] = fn(list[i])
+	}
+
+	return list
+}
+
+// Reduce accumulates and combines elements through a fn into a single value.
+//
+// Special case: when fn is nil, it returns the initial value
+//
+// Play: https://go.dev/play/p/gI8Mcvk4NGr
+func Reduce[T any, R any](list []T, fn func(sum R, item T, index int) R, initial R) R {
+	if fn == nil {
+		return initial
+	}
+	for i, v := range list {
+		initial = fn(initial, v, i)
+	}
+
+	return initial
+}
+
+// ReduceRight is like the Reduce, but the order is reserve.
+//
+// Special case: when fn is nil, it returns the initial value
+//
+// Play: https://go.dev/play/p/n1rGGeg1KFf
+func ReduceRight[T any, R any](list []T, fn func(sum R, item T, index int) R, initial R) R {
+	if fn == nil {
+		return initial
+	}
+	for i := len(list) - 1; i >= 0; i-- {
+		initial = fn(initial, list[i], i)
+	}
+
+	return initial
+}
