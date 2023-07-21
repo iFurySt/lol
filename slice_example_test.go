@@ -8,11 +8,12 @@ package lol
 
 import (
 	"fmt"
+	"sort"
 )
 
 func ExampleMergeSlice() {
-	res1 := MergeSlice[int]([]int{1, 4, 7}, []int{2, 5, 8}, []int{3, 6, 9})
-	res2 := MergeSlice[int]([]int{1}, []int{2, 5, 8}, []int{3, 6}, []int{4, 7, 9, 10})
+	res1 := MergeSlice([]int{1, 4, 7}, []int{2, 5, 8}, []int{3, 6, 9})
+	res2 := MergeSlice([]int{1}, []int{2, 5, 8}, []int{3, 6}, []int{4, 7, 9, 10})
 	fmt.Println(res1)
 	fmt.Println(res2)
 	// Output:
@@ -21,13 +22,37 @@ func ExampleMergeSlice() {
 }
 
 func ExampleUniqSlice() {
-	res1 := UniqSlice[int]([]int{1, 4, 7}, []int{4, 1, 2}, []int{7, 1, 3})
-	res2 := UniqSlice[int]([]int{4, 7, 9, 10})
+	res1 := UniqSlice([]int{1, 4, 7}, []int{4, 1, 2}, []int{7, 1, 3})
+	res2 := UniqSlice([]int{4, 7, 9, 10})
 	fmt.Println(res1)
 	fmt.Println(res2)
 	// Output:
 	// [1 4 7 2 3]
 	// [4 7 9 10]
+}
+
+func ExampleIntersection() {
+	res1 := Intersection([]int{1, 4, 7}, []int{4, 1, 2}, []int{7, 1, 3})
+	res2 := Intersection([]int{4, 7, 9, 10}, []int{4, 7, 9, 10})
+	sort.Ints(res1)
+	sort.Ints(res2)
+	fmt.Println(res1)
+	fmt.Println(res2)
+	// Output:
+	// [1]
+	// [4 7 9 10]
+}
+
+func ExampleDifference() {
+	res1 := Difference([]int{1, 4, 7, 11}, []int{4, 1, 2})
+	res2 := Difference([]int{9, 10}, []int{4, 7, 9, 10})
+	sort.Ints(res1)
+	sort.Ints(res2)
+	fmt.Println(res1)
+	fmt.Println(res2)
+	// Output:
+	// [7 11]
+	// []
 }
 
 func ExampleMap() {

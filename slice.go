@@ -61,6 +61,71 @@ func UniqSlice[T comparable](ss ...[]T) []T {
 	return res
 }
 
+// Union returns the union of multiple slices.
+func Union[T comparable](ss ...[]T) []T {
+	return UniqSlice[T](ss...)
+}
+
+// Intersection returns the intersection of multiple slices.
+//
+// Play: https://go.dev/play/p/tqI_pu_-khj
+func Intersection[T comparable](ss ...[]T) []T {
+	if len(ss) == 0 {
+		return []T{}
+	}
+	var n, min, max = len(ss), 0, 0
+	for _, v := range ss {
+		l := len(v)
+		if l > max {
+			max = l
+		}
+		if l < min {
+			min = l
+		}
+	}
+	if max == 0 {
+		return []T{}
+	}
+
+	var (
+		res   = make([]T, 0, min)
+		count = make(map[T]uint, max)
+	)
+	for _, s := range ss {
+		for _, v := range s {
+			count[v] += 1
+			if count[v] == uint(n) {
+				res = append(res, v)
+			}
+		}
+	}
+	return res
+}
+
+// Difference returns the difference of s1-s2.
+//
+// Play: https://go.dev/play/p/fB7HJFYbsCB
+func Difference[T comparable](s1, s2 []T) []T {
+	if len(s1) == 0 {
+		return []T{}
+	}
+	if len(s2) == 0 {
+		return s1
+	}
+
+	exist := make(map[T]struct{}, len(s2))
+	for _, v := range s2 {
+		exist[v] = struct{}{}
+	}
+	res := make([]T, 0, len(s1)/2)
+	for _, v := range s1 {
+		if _, ok := exist[v]; !ok {
+			res = append(res, v)
+		}
+	}
+	return res
+}
+
 // Map maps a function over a slice.
 //
 // https://go.dev/play/p/ePBYrs1YqDz
