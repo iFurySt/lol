@@ -38,3 +38,19 @@ func ExampleAbs() {
 	// 2, lol.int64Type
 	// 2, lol.int64Type
 }
+
+func ExampleMax() {
+	fmt.Println(Max(3, 1))
+	fmt.Println(Max(3.3, -1.0))
+	// Output:
+	// 3
+	// 3.3
+}
+
+func ExampleMin() {
+	fmt.Println(Min(3, 1))
+	fmt.Println(Min(3.3, -1.0))
+	// Output:
+	// 1
+	// -1
+}

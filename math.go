@@ -27,3 +27,19 @@ func Abs[T number](x T) T {
 	//return x
 	return T(math.Float64frombits(math.Float64bits(float64(x)) &^ (1 << 63)))
 }
+
+// Max returns the largest of x and y.
+func Max[T number](a, b T) T {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// Min returns the smallest of x and y.
+func Min[T number](a, b T) T {
+	if a < b {
+		return a
+	}
+	return b
+}
