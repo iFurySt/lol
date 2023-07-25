@@ -73,7 +73,7 @@ func Intersection[T comparable](ss ...[]T) []T {
 	if len(ss) == 0 {
 		return []T{}
 	}
-	var n, min, max = len(ss), 0, 0
+	var n, min, max = len(ss), len(ss[0]), len(ss[0])
 	for _, v := range ss {
 		l := len(v)
 		if l > max {
