@@ -8,8 +8,19 @@ package lol
 
 import (
 	"fmt"
+	"math"
 	"sort"
 )
+
+func ExampleSortSlice() {
+	s := []float64{3, 6, 1, math.NaN(), 9, math.NaN()}
+	fmt.Println(s)
+	SortSlice(s)
+	fmt.Println(s)
+	// Output:
+	// [3 6 1 NaN 9 NaN]
+	// [NaN NaN 1 3 6 9]
+}
 
 func ExampleMergeSlice() {
 	res1 := MergeSlice([]int{1, 4, 7}, []int{2, 5, 8}, []int{3, 6, 9})

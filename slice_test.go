@@ -13,6 +13,34 @@ import (
 	"testing"
 )
 
+func TestSortSlice(t *testing.T) {
+	for _, c := range []struct {
+		name  string
+		input []float64
+		want  []float64
+	}{
+		{"empty", []float64{}, []float64{}},
+		{"normal-case1", []float64{3, 1, 5}, []float64{1, 3, 5}},
+		{"normal-case1", []float64{0, -1, 1, 5}, []float64{-1, 0, 1, 5}},
+	} {
+		SortSlice(c.input)
+		assert.Equalf(t, c.want, c.input, c.name)
+	}
+
+	for _, c := range []struct {
+		name  string
+		input []string
+		want  []string
+	}{
+		{"empty", []string{}, []string{}},
+		{"normal-case1", []string{"a", "2", "b", "1"}, []string{"1", "2", "a", "b"}},
+		{"normal-case1", []string{"-1", "z", "a", "1"}, []string{"-1", "1", "a", "z"}},
+	} {
+		SortSlice(c.input)
+		assert.Equalf(t, c.want, c.input, c.name)
+	}
+}
+
 type testMultipleSlice struct {
 	name   string
 	inputs [][]int

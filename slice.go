@@ -6,6 +6,16 @@
 
 package lol
 
+import (
+	"golang.org/x/exp/constraints"
+	"golang.org/x/exp/slices"
+)
+
+// SortSlice sorts a slice. Just a wrapper for slices.Sort.
+func SortSlice[S ~[]E, E constraints.Ordered](s S) {
+	slices.Sort(s)
+}
+
 // MergeSlice merges multiple slices without removing duplicates or shuffling the elements.
 //
 // Play: https://go.dev/play/p/ARhoTg83WK8
