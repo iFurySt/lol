@@ -27,6 +27,9 @@ func main() {
 }
 ```
 
+## Usage
+For more detailed usage, you can visit the [wiki page](https://github.com/iFurySt/lol/wiki).
+
 ## Contributing
 Contributions Welcome!
 1. Fork it!
