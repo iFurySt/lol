@@ -39,7 +39,7 @@ Contributions Welcome!
 5. Submit a pull request :D
 
 ## License
-Released under the [MIT License](LICENSE.txt).
+Released under the [MIT License](LICENSE).
 
 [doc-img]: https://pkg.go.dev/badge/github.com/ifuryst/lol.svg
 [doc]: https://pkg.go.dev/github.com/ifuryst/lol
