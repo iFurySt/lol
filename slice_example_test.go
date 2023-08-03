@@ -100,3 +100,13 @@ func ExampleReduceRight() {
 	// 168
 	// reverse: 3.4 2.3 1.7 0.1
 }
+
+func ExampleInclude() {
+	res1 := Include([]int{1, 7, 3, 4}, 3)
+	res2 := Include([]string{"1", "7", "3", "4"}, "x")
+	fmt.Println(res1)
+	fmt.Println(res2)
+	// Output:
+	// true
+	// false
+}

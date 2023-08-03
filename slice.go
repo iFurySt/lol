@@ -185,3 +185,15 @@ func ReduceRight[T any, R any](list []T, fn func(sum R, item T, index int) R, in
 
 	return initial
 }
+
+// Include returns true if the slice includes the element.
+//
+// Play:
+func Include[T comparable](list []T, ele T) bool {
+	for _, v := range list {
+		if v == ele {
+			return true
+		}
+	}
+	return false
+}

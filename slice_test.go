@@ -293,3 +293,38 @@ func TestReduceRight(t *testing.T) {
 		assert.Equalf(t, c.want, ReduceRight(c.inputs, c.fn, c.initial), c.name)
 	}
 }
+
+func TestInclude(t *testing.T) {
+	for _, c := range []struct {
+		name   string
+		inputs []int
+		ele    int
+		want   bool
+	}{
+		{"nil", nil, 0, false},
+		{"empty", []int{}, 1, false},
+		{"normal-case1", []int{1, 7, 3, 4}, 0, false},
+		{"normal-case2", []int{1, 7, 3, 4}, 3, true},
+		{"normal-case3", []int{-3, 7, -3, 4}, -3, true},
+		{"normal-case4", []int{-3, 7, -3, 4}, 1, false},
+	} {
+		assert.Equalf(t, c.want, Include(c.inputs, c.ele), c.name)
+	}
+
+	for _, c := range []struct {
+		name   string
+		inputs []string
+		ele    string
+		want   bool
+	}{
+		{"nil", nil, "0", false},
+		{"empty", []string{}, "1", false},
+		{"normal-case1", []string{"1", "7", "3", "4"}, "0", false},
+		{"normal-case2", []string{"1", "7", "3", "4"}, "3", true},
+		{"normal-case3", []string{"-3", "7", "-3", "4"}, "-3", true},
+		{"normal-case4", []string{"-3", "7", "-3", "4"}, "1", false},
+		{"normal-case5", []string{"-3", "7", "-3", "4"}, "", false},
+	} {
+		assert.Equalf(t, c.want, Include(c.inputs, c.ele), c.name)
+	}
+}
