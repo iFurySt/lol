@@ -218,3 +218,27 @@ func Include[T comparable](list []T, ele T) bool {
 	}
 	return false
 }
+
+// Index returns the index of elements in the slice, or -1 if not found.
+//
+// Play: https://go.dev/play/p/4ZBiqNvs-Vc
+func Index[T comparable](list []T, ele T) int {
+	for i, v := range list {
+		if v == ele {
+			return i
+		}
+	}
+	return -1
+}
+
+// LastIndex is same as Index, but it returns the last index.
+//
+// Play: https://go.dev/play/p/TL2YNWHvDqw
+func LastIndex[T comparable](list []T, ele T) int {
+	for i := len(list) - 1; i > 0; i-- {
+		if list[i] == ele {
+			return i
+		}
+	}
+	return -1
+}

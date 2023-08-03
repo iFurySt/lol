@@ -125,3 +125,23 @@ func ExampleInclude() {
 	// true
 	// false
 }
+
+func ExampleIndex() {
+	res1 := Index([]int{1, 7, 3, 4, 3}, 3)
+	res2 := Index([]string{"1", "7", "3", "4"}, "x")
+	fmt.Println(res1)
+	fmt.Println(res2)
+	// Output:
+	// 2
+	// -1
+}
+
+func ExampleLastIndex() {
+	res1 := LastIndex([]int{1, 7, 3, 4, 3}, 3)
+	res2 := LastIndex([]string{"1", "7", "3", "4"}, "x")
+	fmt.Println(res1)
+	fmt.Println(res2)
+	// Output:
+	// 4
+	// -1
+}

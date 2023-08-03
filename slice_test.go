@@ -355,3 +355,73 @@ func TestInclude(t *testing.T) {
 		assert.Equalf(t, c.want, Include(c.inputs, c.ele), c.name)
 	}
 }
+
+func TestIndex(t *testing.T) {
+	for _, c := range []struct {
+		name   string
+		inputs []int
+		ele    int
+		want   int
+	}{
+		{"nil", nil, 0, -1},
+		{"empty", []int{}, 1, -1},
+		{"normal-case1", []int{1, 7, 3, 4}, 0, -1},
+		{"normal-case2", []int{1, 7, 3, 4}, 3, 2},
+		{"normal-case3", []int{-3, 7, -3, 4}, -3, 0},
+		{"normal-case4", []int{-3, 7, -3, 4}, 4, 3},
+	} {
+		assert.Equalf(t, c.want, Index(c.inputs, c.ele), c.name)
+	}
+
+	for _, c := range []struct {
+		name   string
+		inputs []string
+		ele    string
+		want   int
+	}{
+		{"nil", nil, "0", -1},
+		{"empty", []string{}, "1", -1},
+		{"normal-case1", []string{"1", "7", "3", "4"}, "0", -1},
+		{"normal-case2", []string{"1", "7", "3", "4"}, "3", 2},
+		{"normal-case3", []string{"-3", "7", "-3", "4"}, "-3", 0},
+		{"normal-case4", []string{"-3", "7", "-3", "4"}, "4", 3},
+		{"normal-case5", []string{"-3", "7", "-3", "4"}, "", -1},
+	} {
+		assert.Equalf(t, c.want, Index(c.inputs, c.ele), c.name)
+	}
+}
+
+func TestLastIndex(t *testing.T) {
+	for _, c := range []struct {
+		name   string
+		inputs []int
+		ele    int
+		want   int
+	}{
+		{"nil", nil, 0, -1},
+		{"empty", []int{}, 1, -1},
+		{"normal-case1", []int{1, 7, 3, 4}, 0, -1},
+		{"normal-case2", []int{1, 7, 3, 4}, 3, 2},
+		{"normal-case3", []int{-3, 7, -3, 4}, -3, 2},
+		{"normal-case4", []int{-3, 7, -3, 4}, 4, 3},
+	} {
+		assert.Equalf(t, c.want, LastIndex(c.inputs, c.ele), c.name)
+	}
+
+	for _, c := range []struct {
+		name   string
+		inputs []string
+		ele    string
+		want   int
+	}{
+		{"nil", nil, "0", -1},
+		{"empty", []string{}, "1", -1},
+		{"normal-case1", []string{"1", "7", "3", "4"}, "0", -1},
+		{"normal-case2", []string{"1", "7", "3", "4"}, "3", 2},
+		{"normal-case3", []string{"-3", "7", "-3", "4"}, "-3", 2},
+		{"normal-case4", []string{"-3", "7", "-3", "4"}, "4", 3},
+		{"normal-case5", []string{"-3", "7", "-3", "4"}, "", -1},
+	} {
+		assert.Equalf(t, c.want, LastIndex(c.inputs, c.ele), c.name)
+	}
+}
