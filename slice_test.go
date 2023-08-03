@@ -128,6 +128,33 @@ func TestMap(t *testing.T) {
 	}
 }
 
+func TestMapTo(t *testing.T) {
+	for _, c := range []struct {
+		name   string
+		inputs []int
+		fn     func(int) int
+		want   []int
+	}{
+		{"nil", nil, func(v int) int { return -v }, []int{}},
+		{"empty", []int{}, func(v int) int { return -v }, []int{}},
+		{"normal", []int{1, 7, 3, 4}, func(v int) int { return -v }, []int{-1, -7, -3, -4}},
+		{"fn nil", []int{1, 7, 3, 4}, nil, []int{}},
+	} {
+		assert.Equalf(t, c.want, MapTo(c.inputs, c.fn), c.name)
+	}
+
+	type user struct {
+		name string
+		age  uint8
+	}
+	got := MapTo([]user{
+		{"Heisenberg", 35},
+		{"Hank", 32},
+		{"Saul", 33},
+	}, func(u user) string { return u.name })
+	assert.Equalf(t, []string{"Heisenberg", "Hank", "Saul"}, got, "extract struct")
+}
+
 func TestReduce(t *testing.T) {
 	t.Parallel()
 

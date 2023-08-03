@@ -73,6 +73,21 @@ func ExampleMap() {
 	// [2 6 10]
 }
 
+func ExampleMapTo() {
+	type user struct {
+		name string
+		age  uint8
+	}
+	res := MapTo([]user{
+		{"Heisenberg", 35},
+		{"Hank", 32},
+		{"Saul", 33},
+	}, func(u user) string { return u.name })
+	fmt.Println(res)
+	// Output:
+	// [Heisenberg Hank Saul]
+}
+
 func ExampleReduce() {
 	res1 := Reduce([]int{1, 7, 3, 4}, func(s float64, v, i int) float64 {
 		return s * float64(v)

@@ -138,7 +138,7 @@ func Difference[T comparable](s1, s2 []T) []T {
 
 // Map maps a function over a slice.
 //
-// https://go.dev/play/p/ePBYrs1YqDz
+// Play: https://go.dev/play/p/ePBYrs1YqDz
 func Map[T any](list []T, fn func(v T) T) []T {
 	if len(list) == 0 {
 		return []T{}
@@ -152,6 +152,27 @@ func Map[T any](list []T, fn func(v T) T) []T {
 	}
 
 	return list
+}
+
+// MapTo is same as Map, but it can return another type slice.
+//
+// Special case: when fn is nil, it returns the empty slice.
+//
+// PLay: https://go.dev/play/p/wClBNz0Fjxt
+func MapTo[T any, R any](list []T, fn func(v T) R) []R {
+	if len(list) == 0 {
+		return []R{}
+	}
+	if fn == nil {
+		return []R{}
+	}
+
+	var res = make([]R, len(list))
+	for i := range list {
+		res[i] = fn(list[i])
+	}
+
+	return res
 }
 
 // Reduce accumulates and combines elements through a fn into a single value.
@@ -188,7 +209,7 @@ func ReduceRight[T any, R any](list []T, fn func(sum R, item T, index int) R, in
 
 // Include returns true if the slice includes the element.
 //
-// Play:
+// Play: https://go.dev/play/p/6VW3_rG4AIX
 func Include[T comparable](list []T, ele T) bool {
 	for _, v := range list {
 		if v == ele {
