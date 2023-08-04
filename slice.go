@@ -9,6 +9,8 @@ package lol
 import (
 	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/slices"
+	"math/rand"
+	"time"
 )
 
 // SortSlice sorts a slice. Just a wrapper for slices.Sort.
@@ -154,7 +156,7 @@ func Map[T any](list []T, fn func(v T) T) []T {
 	return list
 }
 
-// MapTo is same as Map, but it can return another type slice.
+// MapTo is same as Map, but it can return another type of slice.
 //
 // Special case: when fn is nil, it returns the empty slice.
 //
@@ -173,6 +175,19 @@ func MapTo[T any, R any](list []T, fn func(v T) R) []R {
 	}
 
 	return res
+}
+
+// Shuffle shuffles a slice for random order.
+// Implement based on rand.Shuffle
+//
+// Play: https://go.dev/play/p/A2yeiJDWIHp
+func Shuffle[T any](list []T) {
+	if len(list) == 0 {
+		return
+	}
+	s := rand.NewSource(time.Now().UnixNano())
+	rand.New(s).Shuffle(len(list), func(i, j int) { list[i], list[j] = list[j], list[i] })
+	return
 }
 
 // Reduce accumulates and combines elements through a fn into a single value.

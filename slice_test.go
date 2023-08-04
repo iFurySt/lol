@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"sort"
+	"strings"
 	"testing"
 )
 
@@ -153,6 +154,15 @@ func TestMapTo(t *testing.T) {
 		{"Saul", 33},
 	}, func(u user) string { return u.name })
 	assert.Equalf(t, []string{"Heisenberg", "Hank", "Saul"}, got, "extract struct")
+}
+
+func TestShuffle(t *testing.T) {
+	s := []string{"a", "b", "c", "d", "e", "a", "b", "c", "d", "e", "a", "b", "c", "d", "e", "a", "b", "c", "d", "e"}
+	s1 := strings.Join(s, "")
+	Shuffle(s)
+	s2 := strings.Join(s, "")
+	// Probabilistic problem
+	assert.NotEqualf(t, s1, s2, "shuffle string")
 }
 
 func TestReduce(t *testing.T) {

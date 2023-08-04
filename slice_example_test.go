@@ -88,6 +88,12 @@ func ExampleMapTo() {
 	// [Heisenberg Hank Saul]
 }
 
+func ExampleShuffle() {
+	s := []string{"a", "b", "c", "d"}
+	Shuffle(s)
+	fmt.Println(s)
+}
+
 func ExampleReduce() {
 	res1 := Reduce([]int{1, 7, 3, 4}, func(s float64, v, i int) float64 {
 		return s * float64(v)
