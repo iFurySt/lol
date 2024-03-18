@@ -7,10 +7,11 @@
 package lol
 
 import (
-	"golang.org/x/exp/constraints"
-	"golang.org/x/exp/slices"
 	"math/rand"
+	"slices"
 	"time"
+
+	"golang.org/x/exp/constraints"
 )
 
 // SortSlice sorts a slice. Just a wrapper for slices.Sort.
@@ -85,23 +86,23 @@ func Intersection[T comparable](ss ...[]T) []T {
 	if len(ss) == 0 {
 		return []T{}
 	}
-	var n, min, max = len(ss), len(ss[0]), len(ss[0])
+	var n, minL, maxL = len(ss), len(ss[0]), len(ss[0])
 	for _, v := range ss {
 		l := len(v)
-		if l > max {
-			max = l
+		if l > maxL {
+			maxL = l
 		}
-		if l < min {
-			min = l
+		if l < minL {
+			minL = l
 		}
 	}
-	if max == 0 {
+	if maxL == 0 {
 		return []T{}
 	}
 
 	var (
-		res   = make([]T, 0, min)
-		count = make(map[T]uint, max)
+		res   = make([]T, 0, minL)
+		count = make(map[T]uint, maxL)
 	)
 	for _, s := range ss {
 		for _, v := range s {
@@ -136,6 +137,98 @@ func Difference[T comparable](s1, s2 []T) []T {
 		}
 	}
 	return res
+}
+
+type FindSliceDeltasOptions[T any, K comparable] struct {
+	// Copy realizes deep copy, confirm the FindSliceDeltas return the new slice
+	Copy func(T) T
+
+	// Compare should return a negative number when a < b, a positive number when
+	// a > b and zero when a == b.
+	Compare func(a, b T) int
+}
+
+// FindSliceDeltas finds the added, removed, updated and unchanged items between s1 and s2.
+// The key function is used to get the key of the item, and the equal function is used to compare the item.
+// These two functions are required!
+//
+// The added, updated, unchanged slice will use s2's item, and the removed slice will use s1's item.
+// if you provide the Copy function in FindSliceDeltasOptions,
+// the all return slice will be copied through the Copy function.
+//
+// Play: https://go.dev/play/p/d-y9Fycqiv0
+func FindSliceDeltas[T any, K comparable](
+	s1, s2 []T, key func(T) K,
+	equal func(T, T) bool, options ...FindSliceDeltasOptions[T, K],
+) (added, removed, updated, unchanged []T) {
+	if key == nil || equal == nil {
+		return nil, nil, nil, nil
+	}
+
+	capacity := max(len(s1), len(s2)) / 4
+	added = make([]T, 0, capacity)
+	removed = make([]T, 0, capacity)
+	updated = make([]T, 0, capacity)
+	unchanged = make([]T, 0, capacity)
+
+	var option FindSliceDeltasOptions[T, K]
+	if len(options) > 0 {
+		option = options[0]
+	}
+
+	// key -> item
+	m1 := make(map[K]T)
+	m2 := make(map[K]T)
+	for _, v := range s1 {
+		m1[key(v)] = v
+	}
+	for _, v := range s2 {
+		m2[key(v)] = v
+	}
+
+	// compare s1 and s2, find added, updated and unchanged items
+	for k1, v2 := range m2 {
+		v1, ok := m1[k1]
+		if !ok {
+			if option.Copy != nil {
+				added = append(added, option.Copy(v2))
+				continue
+			}
+			added = append(added, v2)
+		} else if equal(v1, v2) {
+			if option.Copy != nil {
+				added = append(added, option.Copy(v2))
+				continue
+			}
+			unchanged = append(unchanged, v2)
+		} else {
+			if option.Copy != nil {
+				added = append(added, option.Copy(v2))
+				continue
+			}
+			updated = append(updated, v2)
+		}
+	}
+
+	// find removed items
+	for k1, v1 := range m1 {
+		if _, ok := m2[k1]; !ok {
+			if option.Copy != nil {
+				added = append(added, option.Copy(v1))
+				continue
+			}
+			removed = append(removed, v1)
+		}
+	}
+
+	if option.Compare != nil {
+		slices.SortStableFunc(added, option.Compare)
+		slices.SortStableFunc(removed, option.Compare)
+		slices.SortStableFunc(updated, option.Compare)
+		slices.SortStableFunc(unchanged, option.Compare)
+	}
+
+	return added, removed, updated, unchanged
 }
 
 // Map maps a function over a slice.

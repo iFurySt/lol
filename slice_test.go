@@ -113,6 +113,144 @@ func TestDifference(t *testing.T) {
 	}
 }
 
+type simpleStruct struct {
+	ID   int
+	Name string
+}
+
+func TestFindSliceDeltas(t *testing.T) {
+	intKey := func(v int) int { return v }
+	intEqual := func(a, b int) bool { return a == b }
+	intCmp := func(a, b int) int { return a - b }
+	testCases := []struct {
+		name     string
+		s1       []int
+		s2       []int
+		key      func(int) int
+		equal    func(int, int) bool
+		cmp      func(int, int) int
+		expected [][]int
+	}{
+		{
+			"nil slice", nil, nil,
+			intKey, intEqual, intCmp,
+			[][]int{{}, {}, {}, {}},
+		},
+		{
+			"nil func", []int{1, 2, 3}, []int{2, 3, 4},
+			nil, nil, nil,
+			[][]int{nil, nil, nil, nil},
+		},
+		{
+			"same-case", []int{1, 2, 3}, []int{1, 2, 3},
+			intKey, intEqual, intCmp,
+			[][]int{{}, {}, {}, {1, 2, 3}},
+		},
+		{
+			"a-empty", []int{}, []int{1, 2, 3},
+			intKey, intEqual, intCmp,
+			[][]int{{1, 2, 3}, {}, {}, {}},
+		},
+		{
+			"b-empty", []int{1, 2, 3}, []int{},
+			intKey, intEqual, intCmp,
+			[][]int{{}, {1, 2, 3}, {}, {}},
+		},
+		{
+			"diff-case", []int{1, 2, 3}, []int{4, 5, 6},
+			intKey, intEqual, intCmp,
+			[][]int{{4, 5, 6}, {1, 2, 3}, {}, {}},
+		},
+		{
+			"normal-case", []int{1, 2, 3}, []int{2, 3, 4},
+			intKey, intEqual, intCmp,
+			[][]int{
+				{4}, {1}, {}, {2, 3},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			added, removed, updated, unchanged := FindSliceDeltas(tc.s1, tc.s2, tc.key, tc.equal,
+				FindSliceDeltasOptions[int, int]{Compare: tc.cmp})
+			assert.Equal(t, tc.expected[0], added)
+			assert.Equal(t, tc.expected[1], removed)
+			assert.Equal(t, tc.expected[2], updated)
+			assert.Equal(t, tc.expected[3], unchanged)
+		})
+	}
+
+	objKey := func(v simpleStruct) int { return v.ID }
+	objEqual := func(a, b simpleStruct) bool { return a.ID == b.ID }
+	objCmp := func(a, b simpleStruct) int { return a.ID - b.ID }
+	testCases2 := []struct {
+		name     string
+		s1       []simpleStruct
+		s2       []simpleStruct
+		key      func(simpleStruct) int
+		equal    func(simpleStruct, simpleStruct) bool
+		cmp      func(simpleStruct, simpleStruct) int
+		expected [][]simpleStruct
+	}{
+		{
+			"nil slice", nil, nil,
+			objKey, objEqual, objCmp,
+			[][]simpleStruct{{}, {}, {}, {}},
+		},
+		{
+			"nil func", []simpleStruct{{1, "a"}, {2, "b"}, {3, "c"}},
+			[]simpleStruct{{2, "b"}, {3, "c"}, {4, "d"}},
+			nil, nil, nil,
+			[][]simpleStruct{nil, nil, nil, nil},
+		},
+		{
+			"same-case", []simpleStruct{{1, "a"}, {2, "b"}, {3, "c"}},
+			[]simpleStruct{{1, "a"}, {2, "b"}, {3, "c"}},
+			objKey, objEqual, objCmp,
+			[][]simpleStruct{{}, {}, {}, {{1, "a"}, {2, "b"}, {3, "c"}}},
+		},
+		{
+			"a-empty", []simpleStruct{},
+			[]simpleStruct{{1, "a"}, {2, "b"}, {3, "c"}},
+			objKey, objEqual, objCmp,
+			[][]simpleStruct{{{1, "a"}, {2, "b"}, {3, "c"}}, {}, {}, {}},
+		},
+		{
+			"b-empty", []simpleStruct{{1, "a"}, {2, "b"}, {3, "c"}},
+			[]simpleStruct{},
+			objKey, objEqual, objCmp,
+			[][]simpleStruct{{}, {{1, "a"}, {2, "b"}, {3, "c"}}, {}, {}},
+		},
+		{
+			"diff-case", []simpleStruct{{1, "a"}, {2, "b"}, {3, "c"}},
+			[]simpleStruct{{4, "d"}, {5, "e"}, {6, "f"}},
+			objKey, objEqual, objCmp,
+			[][]simpleStruct{{{4, "d"}, {5, "e"}, {6, "f"}},
+				{{1, "a"}, {2, "b"}, {3, "c"}}, {}, {}},
+		},
+		{
+			"normal-case", []simpleStruct{{1, "a"}, {2, "b"}, {3, "c"}},
+			[]simpleStruct{{2, "b"}, {3, "c"}, {4, "d"}},
+			objKey, objEqual, objCmp,
+			[][]simpleStruct{{{4, "d"}}, {{1, "a"}},
+				{}, {{2, "b"}, {3, "c"}}},
+		},
+	}
+
+	for _, tc := range testCases2 {
+		t.Run(tc.name, func(t *testing.T) {
+			added, removed, updated, unchanged := FindSliceDeltas(tc.s1, tc.s2, tc.key, tc.equal,
+				FindSliceDeltasOptions[simpleStruct, int]{Compare: tc.cmp})
+			assert.Equal(t, tc.expected[0], added)
+			assert.Equal(t, tc.expected[1], removed)
+			assert.Equal(t, tc.expected[2], updated)
+			assert.Equal(t, tc.expected[3], unchanged)
+		})
+
+	}
+}
+
 func TestMap(t *testing.T) {
 	for _, c := range []struct {
 		name   string

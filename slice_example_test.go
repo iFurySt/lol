@@ -66,6 +66,25 @@ func ExampleDifference() {
 	// []
 }
 
+func ExampleFindSliceDeltas() {
+	added, removed, updated, unchanged := FindSliceDeltas([]int{1, 4, 7, 11}, []int{4, 1, 2}, func(t int) int {
+		return t
+	}, func(v1 int, v2 int) bool {
+		return v1 == v2
+	}, FindSliceDeltasOptions[int, int]{Compare: func(a, b int) int {
+		return a - b
+	}})
+	fmt.Println(added)
+	fmt.Println(removed)
+	fmt.Println(updated)
+	fmt.Println(unchanged)
+	// Output:
+	// [2]
+	// [7 11]
+	// []
+	// [1 4]
+}
+
 func ExampleMap() {
 	res := Map([]int{1, 3, 5}, func(i int) int { return i * 2 })
 	fmt.Println(res)
