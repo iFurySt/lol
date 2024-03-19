@@ -156,7 +156,7 @@ type FindSliceDeltasOptions[T any, K comparable] struct {
 // if you provide the Copy function in FindSliceDeltasOptions,
 // the all return slice will be copied through the Copy function.
 //
-// Play: https://go.dev/play/p/d-y9Fycqiv0
+// Play: https://go.dev/play/p/1-AFrP7CIGQ
 func FindSliceDeltas[T any, K comparable](
 	s1, s2 []T, key func(T) K,
 	equal func(T, T) bool, options ...FindSliceDeltasOptions[T, K],
