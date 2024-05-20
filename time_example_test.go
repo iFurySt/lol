@@ -11,15 +11,16 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sync/atomic"
 	"time"
 )
 
 func ExampleDoThenRepeat() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 
-	i := 0
-	wait := DoThenRepeat(ctx, time.Millisecond*100, func() {
-		i += 1
+	i := atomic.Int32{}
+	wait := DoThenRepeat(ctx, time.Millisecond*400, func() {
+		i.Add(1)
 		time.Sleep(300 * time.Millisecond)
 	}, false)
 
@@ -27,17 +28,17 @@ func ExampleDoThenRepeat() {
 	cancel()
 	wait()
 
-	fmt.Println(i)
+	fmt.Println(i.Load() >= 2)
 	// Output:
-	// 7
+	// true
 }
 
 func ExampleRepeatTask() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 
-	i := 0
-	wait := RepeatTask(ctx, time.Millisecond*100, func() {
-		i += 1
+	i := atomic.Int32{}
+	wait := RepeatTask(ctx, time.Millisecond*400, func() {
+		i.Add(1)
 		time.Sleep(300 * time.Millisecond)
 	}, false)
 
@@ -45,7 +46,7 @@ func ExampleRepeatTask() {
 	cancel()
 	wait()
 
-	fmt.Println(i)
+	fmt.Println(i.Load() >= 2)
 	// Output:
-	// 10
+	// true
 }

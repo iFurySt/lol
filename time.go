@@ -30,6 +30,7 @@ func DoThenRepeat(ctx context.Context, interval time.Duration, fn func(), waitFo
 		return func() {}
 	}
 	var wg sync.WaitGroup
+	done := make(chan struct{})
 	go func() {
 		wg.Add(1)
 		fn()
@@ -40,6 +41,7 @@ func DoThenRepeat(ctx context.Context, interval time.Duration, fn func(), waitFo
 		for {
 			select {
 			case <-ctx.Done():
+				close(done)
 				return
 			case <-ticker.C:
 				wg.Add(1)
@@ -56,6 +58,7 @@ func DoThenRepeat(ctx context.Context, interval time.Duration, fn func(), waitFo
 		}
 	}()
 	return func() {
+		<-done
 		wg.Wait()
 	}
 }
@@ -78,6 +81,7 @@ func RepeatTask(ctx context.Context, interval time.Duration, fn func(), waitForP
 		return func() {}
 	}
 	var wg sync.WaitGroup
+	done := make(chan struct{})
 	go func() {
 		ticker := time.NewTicker(interval)
 		defer ticker.Stop()
@@ -85,6 +89,7 @@ func RepeatTask(ctx context.Context, interval time.Duration, fn func(), waitForP
 		for {
 			select {
 			case <-ctx.Done():
+				close(done)
 				return
 			case <-ticker.C:
 				wg.Add(1)
@@ -101,6 +106,7 @@ func RepeatTask(ctx context.Context, interval time.Duration, fn func(), waitForP
 		}
 	}()
 	return func() {
+		<-done
 		wg.Wait()
 	}
 }
